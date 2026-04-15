@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="旅途">
+<meta name="description" content="旅途 — 離線旅遊行程規劃">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>旅途 — 行程規劃</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- App Shell -->
+<div id="app">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="icon-btn" id="btn-trips-menu" aria-label="行程列表">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="trip-title-area" id="trip-title-area">
+        <span class="trip-label">行程</span>
+        <h1 class="trip-name" id="current-trip-name">尚無行程</h1>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="btn-checklist" aria-label="備忘清單">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-new-trip" aria-label="新增行程">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Day Tabs -->
+  <div class="days-tabs-wrapper">
+    <div class="days-tabs" id="days-tabs">
+      <!-- dynamic -->
+    </div>
+    <button class="add-day-btn" id="btn-add-day">+ 新增天</button>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content" id="main-content">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">✈️</div>
+      <p>點擊右上角 <strong>+</strong> 新增你的第一個行程</p>
+    </div>
+    <div id="schedule-view" style="display:none">
+      <!-- Day Items rendered here -->
+      <div id="items-list" class="items-list"></div>
+    </div>
+  </main>
+
+  <!-- Sort Toggle -->
+  <button class="sort-toggle" id="sort-toggle-btn" style="display:none">⇅ 排序</button>
+
+  <!-- FAB -->
+  <button class="fab" id="btn-fab" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+
+</div>
+
+<!-- ========== MODALS ========== -->
+
+<!-- Trips Sidebar -->
+<div class="overlay" id="overlay-trips"></div>
+<aside class="sidebar" id="sidebar-trips">
+  <div class="sidebar-header">
+    <h2>我的行程</h2>
+    <button class="icon-btn" id="btn-close-sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="trips-list" id="trips-list"></div>
+</aside>
+
+<!-- New Trip Modal -->
+<div class="modal-bg" id="modal-new-trip">
+  <div class="modal">
+    <h3>新增行程</h3>
+    <label>行程名稱
+      <input type="text" id="input-trip-name" placeholder="例：東京五日遊" maxlength="30">
+    </label>
+    <label>目的地
+      <input type="text" id="input-trip-dest" placeholder="例：日本東京" maxlength="30">
+    </label>
+    <label>出發日期
+      <input type="date" id="input-trip-date">
+    </label>
+    <label>天數
+      <input type="number" id="input-trip-days" min="1" max="30" value="5">
+    </label>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel-trip">取消</button>
+      <button class="btn-primary" id="btn-save-trip">建立行程</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Trip Modal -->
+<div class="modal-bg" id="modal-edit-trip">
+  <div class="modal">
+    <h3>編輯行程</h3>
+    <label>行程名稱
+      <input type="text" id="input-edit-trip-name" maxlength="30">
+    </label>
+    <label>目的地
+      <input type="text" id="input-edit-trip-dest" maxlength="30">
+    </label>
+    <div class="modal-actions">
+      <button class="btn-danger" id="btn-delete-trip">刪除行程</button>
+      <button class="btn-primary" id="btn-update-trip">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal-bg" id="modal-add-item">
+  <div class="modal">
+    <h3 id="modal-item-title">新增行程</h3>
+    <div class="type-selector" id="type-selector">
+      <button class="type-btn active" data-type="attraction">🏛 景點</button>
+      <button class="type-btn" data-type="food">🍜 餐廳</button>
+      <button class="type-btn" data-type="transport">🚆 交通</button>
+      <button class="type-btn" data-type="hotel">🏨 住宿</button>
+    </div>
+    <div class="form-row">
+      <label style="flex:1">時間
+        <input type="time" id="input-item-time" value="09:00">
+      </label>
+    </div>
+    <label>地點 / 名稱
+      <input type="text" id="input-item-place" placeholder="例：淺草寺" maxlength="50">
+    </label>
+    <label>地址（可選）
+      <input type="text" id="input-item-address" placeholder="例：東京都台東區淺草2丁目" maxlength="80">
+    </label>
+    <label>備註（可選）
+      <textarea id="input-item-note" placeholder="門票、預約資訊…" rows="2" maxlength="200"></textarea>
+    </label>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel-item">取消</button>
+      <button class="btn-primary" id="btn-save-item">新增</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Item Modal -->
+<div class="modal-bg" id="modal-edit-item">
+  <div class="modal">
+    <h3>編輯行程項目</h3>
+    <div class="type-selector" id="type-selector-edit">
+      <button class="type-btn active" data-type="attraction">🏛 景點</button>
+      <button class="type-btn" data-type="food">🍜 餐廳</button>
+      <button class="type-btn" data-type="transport">🚆 交通</button>
+      <button class="type-btn" data-type="hotel">🏨 住宿</button>
+    </div>
+    <div class="form-row">
+      <label style="flex:1">時間
+        <input type="time" id="input-edit-time">
+      </label>
+    </div>
+    <label>地點 / 名稱
+      <input type="text" id="input-edit-place" maxlength="50">
+    </label>
+    <label>地址（可選）
+      <input type="text" id="input-edit-address" maxlength="80">
+    </label>
+    <label>備註（可選）
+      <textarea id="input-edit-note" rows="2" maxlength="200"></textarea>
+    </label>
+    <div class="modal-actions">
+      <button class="btn-danger" id="btn-delete-item">刪除</button>
+      <button class="btn-primary" id="btn-update-item">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Checklist Modal -->
+<div class="modal-bg" id="modal-checklist">
+  <div class="modal modal-wide">
+    <div class="modal-header-row">
+      <h3>備忘清單</h3>
+      <button class="icon-btn" id="btn-close-checklist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="checklist-tabs">
+      <button class="cl-tab active" data-list="luggage">🧳 行李</button>
+      <button class="cl-tab" data-list="todo">📋 待辦</button>
+    </div>
+    <div class="checklist-input-row">
+      <input type="text" id="input-checklist" placeholder="新增項目…" maxlength="50">
+      <button class="btn-primary btn-sm" id="btn-add-checklist">新增</button>
+    </div>
+    <ul class="checklist-items" id="checklist-items"></ul>
+    <div class="checklist-footer">
+      <button class="btn-text" id="btn-clear-done">清除已完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

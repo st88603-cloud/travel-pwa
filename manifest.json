@@ -1,0 +1,26 @@
+{
+  "name": "旅途 — 行程規劃",
+  "short_name": "旅途",
+  "description": "離線旅遊行程規劃 App",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0f0e17",
+  "theme_color": "#1a1829",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["travel", "productivity"],
+  "lang": "zh-TW"
+}
