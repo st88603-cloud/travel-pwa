@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#1a1a2e">
+<meta name="theme-color" content="#f5f0e8">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="旅途">
 <meta name="description" content="旅途 — 離線旅遊行程規劃">
 <link rel="manifest" href="manifest.json">
@@ -18,61 +18,53 @@
 </head>
 <body>
 
-<!-- App Shell -->
 <div id="app">
 
-  <!-- Top Bar -->
   <header class="topbar">
     <div class="topbar-left">
       <button class="icon-btn" id="btn-trips-menu" aria-label="行程列表">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <div class="trip-title-area" id="trip-title-area">
+      <div class="trip-title-area">
         <span class="trip-label">行程</span>
         <h1 class="trip-name" id="current-trip-name">尚無行程</h1>
       </div>
     </div>
     <div class="topbar-right">
-      <button class="icon-btn" id="btn-checklist" aria-label="備忘清單">
+      <button class="icon-btn" id="btn-notepad" aria-label="旅途筆記" title="旅途筆記">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-checklist" aria-label="備忘清單" title="備忘清單">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       </button>
-      <button class="icon-btn" id="btn-new-trip" aria-label="新增行程">
+      <button class="icon-btn" id="btn-new-trip" aria-label="新增行程" title="新增行程">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
       </button>
     </div>
   </header>
 
-  <!-- Day Tabs -->
   <div class="days-tabs-wrapper">
-    <div class="days-tabs" id="days-tabs">
-      <!-- dynamic -->
-    </div>
+    <div class="days-tabs" id="days-tabs"></div>
     <button class="add-day-btn" id="btn-add-day">+ 新增天</button>
   </div>
 
-  <!-- Main Content -->
-  <main class="main-content" id="main-content">
+  <main class="main-content">
     <div class="empty-state" id="empty-state">
       <div class="empty-icon">✈️</div>
       <p>點擊右上角 <strong>+</strong> 新增你的第一個行程</p>
     </div>
     <div id="schedule-view" style="display:none">
-      <!-- Day Items rendered here -->
       <div id="items-list" class="items-list"></div>
     </div>
   </main>
 
-  <!-- Sort Toggle -->
   <button class="sort-toggle" id="sort-toggle-btn" style="display:none">⇅ 排序</button>
 
-  <!-- FAB -->
   <button class="fab" id="btn-fab" style="display:none">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 
 </div>
-
-<!-- ========== MODALS ========== -->
 
 <!-- Trips Sidebar -->
 <div class="overlay" id="overlay-trips"></div>
@@ -90,18 +82,10 @@
 <div class="modal-bg" id="modal-new-trip">
   <div class="modal">
     <h3>新增行程</h3>
-    <label>行程名稱
-      <input type="text" id="input-trip-name" placeholder="例：東京五日遊" maxlength="30">
-    </label>
-    <label>目的地
-      <input type="text" id="input-trip-dest" placeholder="例：日本東京" maxlength="30">
-    </label>
-    <label>出發日期
-      <input type="date" id="input-trip-date">
-    </label>
-    <label>天數
-      <input type="number" id="input-trip-days" min="1" max="30" value="5">
-    </label>
+    <label>行程名稱<input type="text" id="input-trip-name" placeholder="例：東京五日遊" maxlength="30"></label>
+    <label>目的地<input type="text" id="input-trip-dest" placeholder="例：日本東京" maxlength="30"></label>
+    <label>出發日期<input type="date" id="input-trip-date"></label>
+    <label>天數<input type="number" id="input-trip-days" min="1" max="30" value="5"></label>
     <div class="modal-actions">
       <button class="btn-cancel" id="btn-cancel-trip">取消</button>
       <button class="btn-primary" id="btn-save-trip">建立行程</button>
@@ -113,12 +97,8 @@
 <div class="modal-bg" id="modal-edit-trip">
   <div class="modal">
     <h3>編輯行程</h3>
-    <label>行程名稱
-      <input type="text" id="input-edit-trip-name" maxlength="30">
-    </label>
-    <label>目的地
-      <input type="text" id="input-edit-trip-dest" maxlength="30">
-    </label>
+    <label>行程名稱<input type="text" id="input-edit-trip-name" maxlength="30"></label>
+    <label>目的地<input type="text" id="input-edit-trip-dest" maxlength="30"></label>
     <div class="modal-actions">
       <button class="btn-danger" id="btn-delete-trip">刪除行程</button>
       <button class="btn-primary" id="btn-update-trip">儲存</button>
@@ -136,20 +116,11 @@
       <button class="type-btn" data-type="transport">🚆 交通</button>
       <button class="type-btn" data-type="hotel">🏨 住宿</button>
     </div>
-    <div class="form-row">
-      <label style="flex:1">時間
-        <input type="time" id="input-item-time" value="09:00">
-      </label>
-    </div>
-    <label>地點 / 名稱
-      <input type="text" id="input-item-place" placeholder="例：淺草寺" maxlength="50">
-    </label>
-    <label>地址（可選）
-      <input type="text" id="input-item-address" placeholder="例：東京都台東區淺草2丁目" maxlength="80">
-    </label>
-    <label>備註（可選）
-      <textarea id="input-item-note" placeholder="門票、預約資訊…" rows="2" maxlength="200"></textarea>
-    </label>
+    <label style="flex:1">時間<input type="time" id="input-item-time" value="09:00"></label>
+    <label>地點 / 名稱<input type="text" id="input-item-place" placeholder="例：淺草寺" maxlength="50"></label>
+    <label>地址（可選）<input type="text" id="input-item-address" placeholder="例：東京都台東區淺草2丁目" maxlength="80"></label>
+    <label>備註（可選）<textarea id="input-item-note" placeholder="門票、預約資訊…" rows="2" maxlength="200"></textarea></label>
+    <label>網頁連結（可選）<input type="url" id="input-item-url" placeholder="https://www.instagram.com/…" maxlength="500"></label>
     <div class="modal-actions">
       <button class="btn-cancel" id="btn-cancel-item">取消</button>
       <button class="btn-primary" id="btn-save-item">新增</button>
@@ -167,20 +138,11 @@
       <button class="type-btn" data-type="transport">🚆 交通</button>
       <button class="type-btn" data-type="hotel">🏨 住宿</button>
     </div>
-    <div class="form-row">
-      <label style="flex:1">時間
-        <input type="time" id="input-edit-time">
-      </label>
-    </div>
-    <label>地點 / 名稱
-      <input type="text" id="input-edit-place" maxlength="50">
-    </label>
-    <label>地址（可選）
-      <input type="text" id="input-edit-address" maxlength="80">
-    </label>
-    <label>備註（可選）
-      <textarea id="input-edit-note" rows="2" maxlength="200"></textarea>
-    </label>
+    <label>時間<input type="time" id="input-edit-time"></label>
+    <label>地點 / 名稱<input type="text" id="input-edit-place" maxlength="50"></label>
+    <label>地址（可選）<input type="text" id="input-edit-address" maxlength="80"></label>
+    <label>備註（可選）<textarea id="input-edit-note" rows="2" maxlength="200"></textarea></label>
+    <label>網頁連結（可選）<input type="url" id="input-edit-url" placeholder="https://www.instagram.com/…" maxlength="500"></label>
     <div class="modal-actions">
       <button class="btn-danger" id="btn-delete-item">刪除</button>
       <button class="btn-primary" id="btn-update-item">儲存</button>
@@ -208,6 +170,25 @@
     <ul class="checklist-items" id="checklist-items"></ul>
     <div class="checklist-footer">
       <button class="btn-text" id="btn-clear-done">清除已完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notepad Modal -->
+<div class="modal-bg" id="modal-notepad">
+  <div class="modal modal-wide">
+    <div class="modal-header-row">
+      <h3>📝 旅途筆記</h3>
+      <button class="icon-btn" id="btn-close-notepad">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p class="notepad-hint">可以寫備忘、貼上網址，網址會自動變成可點連結 🔗</p>
+    <textarea id="notepad-content" placeholder="在這裡寫下任何筆記&#10;&#10;例如：&#10;飯店確認碼：ABC123&#10;IG 參考：https://www.instagram.com/explore/&#10;YouTube：https://www.youtube.com/watch?v=…" rows="10"></textarea>
+    <div id="notepad-preview" class="notepad-preview"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-clear-notepad">清除全部</button>
+      <button class="btn-primary" id="btn-save-notepad">儲存筆記</button>
     </div>
   </div>
 </div>
