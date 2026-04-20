@@ -66,7 +66,7 @@
 
 </div>
 
-<!-- Trips Sidebar -->
+<!-- ===== SIDEBAR ===== -->
 <div class="overlay" id="overlay-trips"></div>
 <aside class="sidebar" id="sidebar-trips">
   <div class="sidebar-header">
@@ -76,9 +76,25 @@
     </button>
   </div>
   <div class="trips-list" id="trips-list"></div>
+  <!-- CSV 匯入匯出區塊放在側欄底部 -->
+  <div class="sidebar-csv-bar">
+    <span class="sidebar-csv-label">備份 / 分享</span>
+    <div class="sidebar-csv-btns">
+      <button class="csv-btn csv-export" id="btn-export-csv">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        匯出 CSV
+      </button>
+      <button class="csv-btn csv-import" id="btn-import-csv">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        匯入 CSV
+      </button>
+    </div>
+  </div>
 </aside>
 
-<!-- New Trip Modal -->
+<!-- ===== MODALS ===== -->
+
+<!-- New Trip -->
 <div class="modal-bg" id="modal-new-trip">
   <div class="modal">
     <h3>新增行程</h3>
@@ -93,7 +109,7 @@
   </div>
 </div>
 
-<!-- Edit Trip Modal -->
+<!-- Edit Trip -->
 <div class="modal-bg" id="modal-edit-trip">
   <div class="modal">
     <h3>編輯行程</h3>
@@ -106,7 +122,7 @@
   </div>
 </div>
 
-<!-- Add Item Modal -->
+<!-- Add Item -->
 <div class="modal-bg" id="modal-add-item">
   <div class="modal">
     <h3 id="modal-item-title">新增行程</h3>
@@ -116,7 +132,7 @@
       <button class="type-btn" data-type="transport">🚆 交通</button>
       <button class="type-btn" data-type="hotel">🏨 住宿</button>
     </div>
-    <label style="flex:1">時間<input type="time" id="input-item-time" value="09:00"></label>
+    <label>時間<input type="time" id="input-item-time" value="09:00"></label>
     <label>地點 / 名稱<input type="text" id="input-item-place" placeholder="例：淺草寺" maxlength="50"></label>
     <label>地址（可選）<input type="text" id="input-item-address" placeholder="例：東京都台東區淺草2丁目" maxlength="80"></label>
     <label>備註（可選）<textarea id="input-item-note" placeholder="門票、預約資訊…" rows="2" maxlength="200"></textarea></label>
@@ -128,7 +144,7 @@
   </div>
 </div>
 
-<!-- Edit Item Modal -->
+<!-- Edit Item -->
 <div class="modal-bg" id="modal-edit-item">
   <div class="modal">
     <h3>編輯行程項目</h3>
@@ -150,7 +166,7 @@
   </div>
 </div>
 
-<!-- Checklist Modal -->
+<!-- Checklist -->
 <div class="modal-bg" id="modal-checklist">
   <div class="modal modal-wide">
     <div class="modal-header-row">
@@ -174,7 +190,7 @@
   </div>
 </div>
 
-<!-- Notepad Modal -->
+<!-- Notepad -->
 <div class="modal-bg" id="modal-notepad">
   <div class="modal modal-wide">
     <div class="modal-header-row">
@@ -192,6 +208,74 @@
     </div>
   </div>
 </div>
+
+<!-- CSV Import Modal -->
+<div class="modal-bg" id="modal-import-csv">
+  <div class="modal modal-wide">
+    <div class="modal-header-row">
+      <h3>📥 匯入 CSV</h3>
+      <button class="icon-btn" id="btn-close-import">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Step 1: Upload -->
+    <div id="import-step-1">
+      <p class="import-hint">選擇之前由旅途匯出的 <code>.csv</code> 檔案，或符合格式的 CSV。</p>
+      <div class="csv-format-box">
+        <span class="csv-format-title">CSV 欄位格式（第一列為標題）</span>
+        <code class="csv-format-code">trip_name, trip_dest, start_date, days, day, time, type, place, address, note, url</code>
+      </div>
+      <div class="file-drop-area" id="file-drop-area">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="36" height="36"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p>拖曳 CSV 到這裡，或點擊選擇檔案</p>
+        <input type="file" id="input-csv-file" accept=".csv,text/csv" style="display:none">
+      </div>
+      <div class="import-mode-row">
+        <span class="import-mode-label">匯入方式</span>
+        <div class="import-mode-btns">
+          <button class="import-mode-btn active" data-mode="add">➕ 新增到現有行程</button>
+          <button class="import-mode-btn" data-mode="replace">🔄 取代同名行程</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Preview -->
+    <div id="import-step-2" style="display:none">
+      <div class="import-preview-header">
+        <span id="import-preview-title">預覽匯入內容</span>
+        <button class="btn-text" id="btn-import-reselect">重新選擇</button>
+      </div>
+      <div id="import-preview-table" class="import-preview-table"></div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:16px">
+      <button class="btn-cancel" id="btn-cancel-import">取消</button>
+      <button class="btn-primary" id="btn-confirm-import" disabled>確認匯入</button>
+    </div>
+  </div>
+</div>
+
+<!-- CSV Export Modal -->
+<div class="modal-bg" id="modal-export-csv">
+  <div class="modal">
+    <div class="modal-header-row">
+      <h3>📤 匯出 CSV</h3>
+      <button class="icon-btn" id="btn-close-export">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p class="import-hint">選擇要匯出的行程，將下載為 <code>.csv</code> 檔案，可用 Excel / Numbers 開啟，或重新匯入到旅途。</p>
+    <div class="export-trip-list" id="export-trip-list"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-cancel-export">取消</button>
+      <button class="btn-primary" id="btn-confirm-export">⬇ 下載 CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file input for import -->
+<input type="file" id="csv-file-hidden" accept=".csv,text/csv" style="display:none">
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
