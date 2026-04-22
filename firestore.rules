@@ -1,0 +1,18 @@
+// Firebase Console → Firestore Database → Rules
+// 貼上以下內容後點「發布」
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 行程文件：任何人皆可讀寫（無登入，靠 tripId 做存取控制）
+    match /trips/{tripId} {
+      allow read, write: if true;
+    }
+
+    // 分享索引：任何人皆可讀寫（查詢分享碼 / 建立分享）
+    match /share_index/{code} {
+      allow read, write: if true;
+    }
+  }
+}

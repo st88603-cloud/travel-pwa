@@ -29,8 +29,17 @@
         <span class="trip-label">行程</span>
         <h1 class="trip-name" id="current-trip-name">尚無行程</h1>
       </div>
+      <!-- Sync status dot -->
+      <div class="sync-status" id="sync-status" title="同步狀態">
+        <span class="sync-dot" id="sync-dot"></span>
+        <span class="sync-label" id="sync-label">離線</span>
+      </div>
     </div>
     <div class="topbar-right">
+      <!-- Share button — shown only when a trip is open -->
+      <button class="icon-btn" id="btn-share" aria-label="分享行程" title="分享行程" style="display:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </button>
       <button class="icon-btn" id="btn-notepad" aria-label="旅途筆記" title="旅途筆記">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       </button>
@@ -52,6 +61,7 @@
     <div class="empty-state" id="empty-state">
       <div class="empty-icon">✈️</div>
       <p>點擊右上角 <strong>+</strong> 新增你的第一個行程</p>
+      <p style="font-size:13px;margin-top:8px;">或使用朋友傳來的<strong>分享連結</strong>加入共同行程</p>
     </div>
     <div id="schedule-view" style="display:none">
       <div id="items-list" class="items-list"></div>
@@ -76,7 +86,6 @@
     </button>
   </div>
   <div class="trips-list" id="trips-list"></div>
-  <!-- CSV 匯入匯出區塊放在側欄底部 -->
   <div class="sidebar-csv-bar">
     <span class="sidebar-csv-label">備份 / 分享</span>
     <div class="sidebar-csv-btns">
@@ -200,11 +209,54 @@
       </button>
     </div>
     <p class="notepad-hint">可以寫備忘、貼上網址，網址會自動變成可點連結 🔗</p>
-    <textarea id="notepad-content" placeholder="在這裡寫下任何筆記&#10;&#10;例如：&#10;飯店確認碼：ABC123&#10;IG 參考：https://www.instagram.com/explore/&#10;YouTube：https://www.youtube.com/watch?v=…" rows="10"></textarea>
+    <textarea id="notepad-content" placeholder="在這裡寫下任何筆記&#10;&#10;例如：&#10;飯店確認碼：ABC123&#10;IG 參考：https://www.instagram.com/explore/" rows="10"></textarea>
     <div id="notepad-preview" class="notepad-preview"></div>
     <div class="modal-actions">
       <button class="btn-cancel" id="btn-clear-notepad">清除全部</button>
       <button class="btn-primary" id="btn-save-notepad">儲存筆記</button>
+    </div>
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-bg" id="modal-share">
+  <div class="modal">
+    <div class="modal-header-row">
+      <h3>🔗 分享行程</h3>
+      <button class="icon-btn" id="btn-close-share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Share create section -->
+    <div id="share-create-section">
+      <p class="share-desc">產生分享連結後，任何拿到連結的人都能即時查看並共同編輯這份行程。</p>
+      <div class="share-info-box" id="share-info-box" style="display:none">
+        <div class="share-info-label">分享連結</div>
+        <div class="share-link-row">
+          <input type="text" id="share-link-input" readonly>
+          <button class="btn-copy" id="btn-copy-link" title="複製連結">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <p class="share-code-hint">分享碼：<strong id="share-code-display"></strong></p>
+        <div class="share-actions-row">
+          <button class="btn-text btn-danger-text" id="btn-revoke-share">撤銷分享</button>
+        </div>
+      </div>
+      <div id="share-generate-section">
+        <button class="btn-primary" id="btn-generate-share" style="width:100%;margin-top:4px">產生分享連結</button>
+      </div>
+    </div>
+
+    <!-- Join by code section -->
+    <div class="share-divider"><span>或</span></div>
+    <div id="share-join-section">
+      <p class="share-desc">輸入朋友給你的分享碼，加入共同行程：</p>
+      <div class="share-join-row">
+        <input type="text" id="input-join-code" placeholder="輸入 6 位分享碼" maxlength="8" style="text-transform:uppercase;letter-spacing:2px;font-family:'Space Mono',monospace">
+        <button class="btn-primary btn-sm" id="btn-join-trip">加入</button>
+      </div>
     </div>
   </div>
 </div>
@@ -218,12 +270,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-
-    <!-- Step 1: Upload -->
     <div id="import-step-1">
       <p class="import-hint">選擇之前由旅途匯出的 <code>.csv</code> 檔案，或符合格式的 CSV。</p>
       <div class="csv-format-box">
-        <span class="csv-format-title">CSV 欄位格式（第一列為標題）</span>
+        <span class="csv-format-title">CSV 欄位格式</span>
         <code class="csv-format-code">trip_name, trip_dest, start_date, days, day, time, type, place, address, note, url</code>
       </div>
       <div class="file-drop-area" id="file-drop-area">
@@ -239,8 +289,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Step 2: Preview -->
     <div id="import-step-2" style="display:none">
       <div class="import-preview-header">
         <span id="import-preview-title">預覽匯入內容</span>
@@ -248,7 +296,6 @@
       </div>
       <div id="import-preview-table" class="import-preview-table"></div>
     </div>
-
     <div class="modal-actions" style="margin-top:16px">
       <button class="btn-cancel" id="btn-cancel-import">取消</button>
       <button class="btn-primary" id="btn-confirm-import" disabled>確認匯入</button>
@@ -265,7 +312,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <p class="import-hint">選擇要匯出的行程，將下載為 <code>.csv</code> 檔案，可用 Excel / Numbers 開啟，或重新匯入到旅途。</p>
+    <p class="import-hint">選擇要匯出的行程，將下載為 <code>.csv</code> 檔案。</p>
     <div class="export-trip-list" id="export-trip-list"></div>
     <div class="modal-actions">
       <button class="btn-cancel" id="btn-cancel-export">取消</button>
@@ -274,12 +321,9 @@
   </div>
 </div>
 
-<!-- Hidden file input for import -->
-<input type="file" id="csv-file-hidden" accept=".csv,text/csv" style="display:none">
-
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<script src="app.js"></script>
+<!-- Firebase SDK (module) — loaded before app.js -->
+<script type="module" src="app.js"></script>
 </body>
 </html>
